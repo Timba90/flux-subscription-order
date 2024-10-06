@@ -2,7 +2,7 @@
 
 namespace WeblabStudio\Actions\ItmSubscription;
 
-use App\Models\ItmSubscription;
+use WeblabStudio\Models\ItmSubscription;
 use FluxErp\Actions\FluxAction;
 use WeblabStudio\Rulesets\ItmSubscription\UpdateItmSubscriptionRuleset;
 

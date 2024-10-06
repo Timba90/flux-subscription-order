@@ -2,8 +2,8 @@
 
 namespace WeblabStudio\Rulesets\ItmSubscription;
 
-use App\Models\ItmSubscription;
-use App\Models\Order;
+use WeblabStudio\Models\ItmSubscription;
+use FluxErp\Models\Order;
 use FluxErp\Rules\ModelExists;
 use FluxErp\Rulesets\FluxRuleset;
 
@@ -37,7 +37,6 @@ class UpdateItmSubscriptionRuleset extends FluxRuleset
                 'string',
             ],
             'execution_time' => [
-                'nullable',
                 'string',
             ],
             'is_periodic' => [

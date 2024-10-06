@@ -2,7 +2,7 @@
 
 namespace WeblabStudio\Livewire\Order;
 
-use App\Models\ItmSubscription;
+use WeblabStudio\Models\ItmSubscription;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Livewire\Attributes\Renderless;
