@@ -72,7 +72,8 @@ class WlsSubscription extends Model
         return $firstActionDate;
     }
 
-    public function makeNextActionDate(): ?string {
+    public function makeNextActionDate(): ?string
+    {
         $nextActionDate = new Carbon($this->next_action_date);
         if ($this->execution_interval === 'Monatlich') {
             $nextActionDate->addMonth();
@@ -83,10 +84,12 @@ class WlsSubscription extends Model
         } elseif ($this->execution_interval === 'Jährlich') {
             $nextActionDate->addYear();
         }
+
         return $nextActionDate;
     }
 
-    public function updateNextActionDate(): string {
+    public function updateNextActionDate(): string
+    {
         $nextActionDate = new Carbon($this->next_action_date);
 
         if ($this->execution_time === 'Anfang des Monats') {

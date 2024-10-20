@@ -92,6 +92,7 @@ class WlsSubscriptionOrder extends Component
             $this->wlsSubscriptionForm->save();
         } catch (ValidationException $e) {
             exception_to_notifications($e, $this);
+
             return;
         }
         $this->notification()->success(__('Next action skipped successfully'));
@@ -99,7 +100,7 @@ class WlsSubscriptionOrder extends Component
 
     public function test(): void
     {
-        $a = new ProcessWlsSubscriptions();
+        $a = new ProcessWlsSubscriptions;
         $a();
     }
 

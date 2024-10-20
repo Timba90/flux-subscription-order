@@ -13,8 +13,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Throwable;
 use WeblabStudio\Actions\WlsSubscription\UpdateWlsSubscription;
 use WeblabStudio\Models\WlsSubscription;
-use WireUi\Traits\Actions;
-
 
 class ProcessWlsSubscriptions implements Repeatable
 {
@@ -24,13 +22,13 @@ class ProcessWlsSubscriptions implements Repeatable
         $subscriptions = resolve_static(WlsSubscription::class, 'query')
             ->where('next_action_date', $today)
             ->get();
-//        $orderType = resolve_static(OrderType::class, 'query')
-//            ->where('order_type_enum', OrderTypeEnum::Order)
-//            ->first();
+        //        $orderType = resolve_static(OrderType::class, 'query')
+        //            ->where('order_type_enum', OrderTypeEnum::Order)
+        //            ->first();
 
         // Test in tinker
         // $a = new WeblabStudio\Invokables\ProcessWlsSubscriptions; $a();
-//        $a = new ProcessSubscriptionOrder;
+        //        $a = new ProcessSubscriptionOrder;
         foreach ($subscriptions as $subscription) {
             $orderCreated = $this->recreateOrder(
                 $subscription->order_id,
@@ -40,7 +38,7 @@ class ProcessWlsSubscriptions implements Repeatable
                 $subscription->is_periodic
             );
 
-            if($orderCreated) {
+            if ($orderCreated) {
                 $subscription->next_action_date = $subscription->makeNextActionDate();
                 UpdateWlsSubscription::make($subscription)
                     ->validate()
@@ -81,8 +79,7 @@ class ProcessWlsSubscriptions implements Repeatable
         ?string $execution_interval,
         bool $is_backdated,
         bool $is_periodic,
-    ): bool
-    {
+    ): bool {
         $order = resolve_static(Order::class, 'query')
             ->whereKey($orderId)
             ->first();
@@ -137,6 +134,7 @@ class ProcessWlsSubscriptions implements Repeatable
 
         try {
             ReplicateOrder::make($order)->validate()->execute();
+
             return true;
         } catch (Throwable $e) {
             $activity = activity()
