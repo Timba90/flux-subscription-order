@@ -4,16 +4,18 @@ namespace WeblabStudio\Livewire\Forms;
 
 use FluxErp\Livewire\Forms\FluxForm;
 use Livewire\Attributes\Locked;
-use WeblabStudio\Actions\ItmSubscription\CreateItmSubscription;
-use WeblabStudio\Actions\ItmSubscription\DeleteItmSubscription;
-use WeblabStudio\Actions\ItmSubscription\UpdateItmSubscription;
+use WeblabStudio\Actions\WlsSubscription\CreateWlsSubscription;
+use WeblabStudio\Actions\WlsSubscription\DeleteWlsSubscription;
+use WeblabStudio\Actions\WlsSubscription\UpdateWlsSubscription;
 
-class ItmSubscriptionForm extends FluxForm
+class WlsSubscriptionForm extends FluxForm
 {
     #[Locked]
     public ?int $id = null;
 
     public ?int $order_id = null;
+
+    public ?int $order_type_id = null;
 
     public ?string $end_date = null;
 
@@ -36,9 +38,9 @@ class ItmSubscriptionForm extends FluxForm
     public function getActions(): array
     {
         return [
-            'create' => CreateItmSubscription::class,
-            'update' => UpdateItmSubscription::class,
-            'delete' => DeleteItmSubscription::class,
+            'create' => CreateWlsSubscription::class,
+            'update' => UpdateWlsSubscription::class,
+            'delete' => DeleteWlsSubscription::class,
         ];
     }
 }

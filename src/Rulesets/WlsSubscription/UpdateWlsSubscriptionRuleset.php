@@ -1,23 +1,34 @@
 <?php
 
-namespace WeblabStudio\Rulesets\ItmSubscription;
+namespace WeblabStudio\Rulesets\WlsSubscription;
 
-use WeblabStudio\Models\ItmSubscription;
 use FluxErp\Models\Order;
+use FluxErp\Models\OrderType;
 use FluxErp\Rules\ModelExists;
 use FluxErp\Rulesets\FluxRuleset;
+use WeblabStudio\Models\WlsSubscription;
 
-class CreateItmSubscriptionRuleset extends FluxRuleset
+class UpdateWlsSubscriptionRuleset extends FluxRuleset
 {
-    protected static ?string $model = ItmSubscription::class;
+    protected static ?string $model = WlsSubscription::class;
 
     public function rules(): array
     {
         return [
+            'id' => [
+                'required',
+                'integer',
+                app(ModelExists::class, ['model' => WlsSubscription::class]),
+            ],
             'order_id' => [
                 'required',
                 'integer',
                 app(ModelExists::class, ['model' => Order::class]),
+            ],
+            'order_type_id' => [
+                'required',
+                'integer',
+                app(ModelExists::class, ['model' => OrderType::class]),
             ],
             'end_date' => [
                 'nullable',
@@ -32,7 +43,6 @@ class CreateItmSubscriptionRuleset extends FluxRuleset
                 'string',
             ],
             'execution_time' => [
-                'required',
                 'string',
             ],
             'is_periodic' => [
