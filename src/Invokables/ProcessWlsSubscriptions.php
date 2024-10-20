@@ -40,6 +40,7 @@ class ProcessWlsSubscriptions implements Repeatable
 
             if ($orderCreated) {
                 $subscription->next_action_date = $subscription->makeNextActionDate();
+                $subscription->last_action_date = $today;
                 UpdateWlsSubscription::make($subscription)
                     ->validate()
                     ->execute();
