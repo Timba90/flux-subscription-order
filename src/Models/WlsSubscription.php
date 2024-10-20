@@ -45,13 +45,13 @@ class WlsSubscription extends Model
 
         // Adds the execution interval to the first action date if it is before the start date
         if ($firstActionDate < $startDate) {
-            if ($executionInterval === 'Monatlich') {
+            if ($executionInterval === 'monthly') {
                 $firstActionDate->addMonth();
-            } elseif ($executionInterval === 'Quartalsweise') {
+            } elseif ($executionInterval === 'quarterly') {
                 $firstActionDate->addMonth(3);
-            } elseif ($executionInterval === 'Halbjährlich') {
+            } elseif ($executionInterval === 'half-yearly') {
                 $firstActionDate->addMonth(6);
-            } elseif ($executionInterval === 'Jährlich') {
+            } elseif ($executionInterval === 'yearly') {
                 $firstActionDate->addYear();
             }
         }
@@ -75,13 +75,13 @@ class WlsSubscription extends Model
     public function makeNextActionDate(): ?string
     {
         $nextActionDate = new Carbon($this->next_action_date);
-        if ($this->execution_interval === 'Monatlich') {
+        if ($this->execution_interval === 'monthly') {
             $nextActionDate->addMonth();
-        } elseif ($this->execution_interval === 'Quartalsweise') {
+        } elseif ($this->execution_interval === 'quarterly') {
             $nextActionDate->addMonth(3);
-        } elseif ($this->execution_interval === 'Halbjährlich') {
+        } elseif ($this->execution_interval === 'half-yearly') {
             $nextActionDate->addMonth(6);
-        } elseif ($this->execution_interval === 'Jährlich') {
+        } elseif ($this->execution_interval === 'yearly') {
             $nextActionDate->addYear();
         }
 
@@ -101,13 +101,13 @@ class WlsSubscription extends Model
         }
 
         if ($nextActionDate < $this->startDate) {
-            if ($this->execution_interval === 'Monatlich') {
+            if ($this->execution_interval === 'monthly') {
                 $nextActionDate->addMonth();
-            } elseif ($this->execution_interval === 'Quartalsweise') {
+            } elseif ($this->execution_interval === 'quarterly') {
                 $nextActionDate->addMonth(3);
-            } elseif ($this->execution_interval === 'Halbjährlich') {
+            } elseif ($this->execution_interval === 'half-yearly') {
                 $nextActionDate->addMonth(6);
-            } elseif ($this->execution_interval === 'Jährlich') {
+            } elseif ($this->execution_interval === 'yearly') {
                 $nextActionDate->addYear();
             }
         }

@@ -107,24 +107,24 @@ class ProcessWlsSubscriptions implements Repeatable
         if ($is_periodic) {
             if ($is_backdated) {
                 $order->system_delivery_date_end = now();
-                if ($execution_interval === 'Monatlich') {
+                if ($execution_interval === 'monthly') {
                     $order->system_delivery_date = $order->system_delivery_date_end->subMonth();
-                } elseif ($execution_interval === 'Quartalsweise') {
+                } elseif ($execution_interval === 'quarterly') {
                     $order->system_delivery_date = $order->system_delivery_date_end->subMonth(3);
-                } elseif ($execution_interval === 'Halbjährlich') {
+                } elseif ($execution_interval === 'half-yearly') {
                     $order->system_delivery_date = $order->system_delivery_date_end->subMonth(6);
-                } elseif ($execution_interval === 'Jährlich') {
+                } elseif ($execution_interval === 'yearly') {
                     $order->system_delivery_date = $order->system_delivery_date_end->subYear();
                 }
             } else {
                 $order->system_delivery_date = now();
-                if ($execution_interval === 'Monatlich') {
+                if ($execution_interval === 'monthly') {
                     $order->system_delivery_date_end = $order->system_delivery_date->addMonth();
-                } elseif ($execution_interval === 'Quartalsweise') {
+                } elseif ($execution_interval === 'quarterly') {
                     $order->system_delivery_date_end = $order->system_delivery_date->addMonth(3);
-                } elseif ($execution_interval === 'Halbjährlich') {
+                } elseif ($execution_interval === 'half-yearly') {
                     $order->system_delivery_date_end = $order->system_delivery_date->addMonth(6);
-                } elseif ($execution_interval === 'Jährlich') {
+                } elseif ($execution_interval === 'yearly') {
                     $order->system_delivery_date_end = $order->system_delivery_date->addYear();
                 }
             }

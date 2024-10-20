@@ -17,6 +17,7 @@ class SubscriptionOrderServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'weblab-subscription');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
         Livewire::component('order.itm-subscription-order', WlsSubscriptionOrder::class);
 

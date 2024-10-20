@@ -1,0 +1,22 @@
+{
+    "Run from" : "Ausführen ab",
+    "Run until" : "Ausführen bis",
+    "Next run" : "Nächste Ausführung",
+    "Execution frequency" : "Ausführungshäufigkeit",
+    "Execution time" : "Ausführungszeitpunkt",
+    "Order type" : "Auftragsart",
+    "Performance date" : "Leistungsdatum",
+    "Performance period" : "Leistungszeitraum",
+    "Backdated" : "Rückwirkend",
+    "Update" : "Aktualisieren",
+    "Save" : "Speichern",
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "half-yearly": "Halbjährlich",
+    "quarterly": "Vierteljährlich",
+    "start date": "Startdatum",
+    "first of month": "Anfang des Monats",
+    "last of month": "Ende des Monats",
+    "Active": "Aktiv",
+    "Subscription": "Abonnement"
+}
