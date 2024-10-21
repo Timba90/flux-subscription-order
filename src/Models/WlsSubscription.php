@@ -35,11 +35,11 @@ class WlsSubscription extends Model
         $firstActionDate = new Carbon($startDate);
 
         // Set the first action date to the start of the month
-        if ($executionTime === 'Anfang des Monats') {
+        if ($executionTime === 'first-of-month') {
             $firstActionDate->startOfMonth();
         }
         // Set the first action date to the end of the month
-        if ($executionTime === 'Ende des Monats') {
+        if ($executionTime === 'last-of-month') {
             $firstActionDate->endOfMonth();
         }
 
