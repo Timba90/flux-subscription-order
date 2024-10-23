@@ -46,7 +46,7 @@ class ProcessWlsSubscriptions implements Repeatable
             );
 
             if ($orderCreated) {
-                if($subscription->is_automatic) {
+                if ($subscription->is_automatic) {
                     $this->createDocument($orderCreated);
                 }
                 $subscription->next_action_date = $subscription->makeNextActionDate();
@@ -213,7 +213,7 @@ class ProcessWlsSubscriptions implements Repeatable
                     $mail = GenericMail::make($mailMessage, $bladeParameters);
 
                     try {
-                        $sessionKey = 'mail_' . Str::uuid()->toString();
+                        $sessionKey = 'mail_'.Str::uuid()->toString();
                         session()->put($sessionKey, $mailMessage);
 
                         $message = Mail::to($mailMessage->to)
