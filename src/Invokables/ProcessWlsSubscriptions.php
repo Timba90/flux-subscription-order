@@ -4,11 +4,18 @@ namespace WeblabStudio\Invokables;
 
 use Cron\CronExpression;
 use FluxErp\Actions\Order\ReplicateOrder;
+use FluxErp\Actions\Printing;
 use FluxErp\Console\Scheduling\Repeatable;
+use FluxErp\Contracts\OffersPrinting;
 use FluxErp\Enums\OrderTypeEnum;
+use FluxErp\Mail\GenericMail;
 use FluxErp\Models\Order;
 use FluxErp\Models\OrderType;
+use FluxErp\View\Printing\PrintableView;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Laravel\SerializableClosure\SerializableClosure;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Throwable;
 use WeblabStudio\Actions\WlsSubscription\UpdateWlsSubscription;
@@ -39,6 +46,9 @@ class ProcessWlsSubscriptions implements Repeatable
             );
 
             if ($orderCreated) {
+                if ($subscription->is_automatic) {
+                    $this->createDocument($orderCreated);
+                }
                 $subscription->next_action_date = $subscription->makeNextActionDate();
                 $subscription->last_action_date = $today;
                 UpdateWlsSubscription::make($subscription)
@@ -80,7 +90,7 @@ class ProcessWlsSubscriptions implements Repeatable
         ?string $execution_interval,
         bool $is_backdated,
         bool $is_periodic,
-    ): bool {
+    ): Order|bool {
         $order = resolve_static(Order::class, 'query')
             ->whereKey($orderId)
             ->first();
@@ -134,7 +144,104 @@ class ProcessWlsSubscriptions implements Repeatable
         }
 
         try {
-            ReplicateOrder::make($order)->validate()->execute();
+            return ReplicateOrder::make($order)->validate()->execute();
+        } catch (Throwable $e) {
+            $activity = activity()
+                ->event(static::class)
+                ->byAnonymous();
+
+            if (in_array(LogsActivity::class, class_uses_recursive($order))) {
+                $activity->performedOn($order);
+            }
+
+            if ($e instanceof ValidationException) {
+                $activity->withProperties(['data' => $order, 'errors' => $e->errors()]);
+            }
+
+            $activity->log(class_basename($e));
+
+            return false;
+        }
+    }
+
+    public function createDocument(Order $order): bool
+    {
+        // Erstelle die Printing file
+        try {
+            /** @var PrintableView $file */
+            $file = Printing::make([
+                'model_type' => $order->getMorphClass(),
+                'model_id' => $order->getKey(),
+                'view' => 'invoice',
+            ])
+                ->checkPermission()
+                ->validate()
+                ->execute();
+
+            $media = $file->attachToModel($order);
+
+            if ($media) {
+
+                $mailAttachments[] = [
+                    'name' => $media->file_name,
+                    'id' => $media->getKey(),
+                ];
+
+                // Brauche hier Hilfe Patrick x)
+                $bladeParameters = method_exists($this, 'getBladeParameters')
+                    ? $this->getBladeParameters($order)
+                    : [];
+
+                if ($bladeParameters instanceof SerializableClosure) {
+                    $bladeParameters = serialize($bladeParameters);
+                }
+
+                $mailMessage[] = [
+                    'to' => $order->getTo($order, 'invoice'),
+                    'cc' => $order->getCc($order),
+                    'bcc' => $order->getBcc($order),
+                    'subject' => $order->getSubject($order),
+                    'attachments' => array_filter($mailAttachments),
+                    'html_body' => $order->getHtmlBody($order),
+                    'blade_parameters_serialized' => is_string($bladeParameters),
+                    'blade_parameters' => $bladeParameters,
+                    'communicatable_type' => $this->getCommunicatableType($order),
+                    'communicatable_id' => $this->getCommunicatableId($order),
+                ];
+
+                if ($mailMessage) {
+                    $mail = GenericMail::make($mailMessage, $bladeParameters);
+
+                    try {
+                        $sessionKey = 'mail_'.Str::uuid()->toString();
+                        session()->put($sessionKey, $mailMessage);
+
+                        $message = Mail::to($mailMessage->to)
+                            ->cc($mailMessage->cc)
+                            ->bcc($mailMessage->bcc);
+                        $message->send($mail);
+
+                    } catch (Throwable $e) {
+                        $activity = activity()
+                            ->event(static::class)
+                            ->byAnonymous();
+
+                        if (in_array(LogsActivity::class, class_uses_recursive($order))) {
+                            $activity->performedOn($order);
+                        }
+
+                        if ($e instanceof ValidationException) {
+                            $activity->withProperties(['data' => $order, 'errors' => $e->errors()]);
+                        }
+
+                        $activity->log(class_basename($e));
+
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
 
             return true;
         } catch (Throwable $e) {
@@ -154,5 +261,15 @@ class ProcessWlsSubscriptions implements Repeatable
 
             return false;
         }
+    }
+
+    public function getCommunicatableType(OffersPrinting $item): string
+    {
+        return $item->getMorphClass();
+    }
+
+    public function getCommunicatableId(OffersPrinting $item): int
+    {
+        return $item->getKey();
     }
 }

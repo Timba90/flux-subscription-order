@@ -29,6 +29,8 @@ class WlsSubscriptionForm extends FluxForm
 
     public bool $is_active = false;
 
+    public bool $is_automatic = false;
+
     public bool $is_backdated = false;
 
     public ?string $last_action_date = null;
