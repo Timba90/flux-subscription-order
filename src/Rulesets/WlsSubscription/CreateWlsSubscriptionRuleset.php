@@ -47,6 +47,9 @@ class CreateWlsSubscriptionRuleset extends FluxRuleset
             'is_active' => [
                 'boolean',
             ],
+            'is_automatic' => [
+                'boolean',
+            ],
             'is_backdated' => [
                 'boolean',
             ],

@@ -50,9 +50,13 @@
             <x-radio id="is_periodic" label="{{ __('Performance period') }}" wire:model="wlsSubscriptionForm.is_periodic" value="true" />
         </div>
         <div class="flex flex-row justify-between mt-4">
-            <x-toggle id="is_active" wire:model="wlsSubscriptionForm.is_active" label="{{ __('Active') }}" name="toggle" />
+            <x-toggle id="is_automatic" wire:model="wlsSubscriptionForm.is_automatic" label="{{ __('Automatic sending') }}" name="toggle" />
             <x-toggle id="is_backdated" wire:model="wlsSubscriptionForm.is_backdated" label="{{ __('Backdated') }}" name="toggle" />
         </div>
+        <div class="flex flex-row justify-between mt-4">
+            <x-toggle id="is_active" wire:model="wlsSubscriptionForm.is_active" label="{{ __('Active') }}" name="toggle" />
+        </div>
+
         <x-button positive full class="mt-4" wire:click="save()">
                 {{ $wlsSubscriptionForm->id ? __('Update') : __('Save') }}
         </x-button>
