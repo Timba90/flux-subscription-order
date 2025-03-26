@@ -46,7 +46,16 @@ class ProcessWlsSubscriptions implements Repeatable
                     ->execute();
             }
         }
+    }
 
+    public static function defaultCron(): ?CronExpression
+    {
+        return null;
+    }
+
+    public static function description(): ?string
+    {
+        return 'Process WLS subscriptions';
     }
 
     public static function isRepeatable(): bool
@@ -59,19 +68,9 @@ class ProcessWlsSubscriptions implements Repeatable
         return class_basename(static::class);
     }
 
-    public static function description(): ?string
-    {
-        return 'Process WLS subscriptions';
-    }
-
     public static function parameters(): array
     {
         return [];
-    }
-
-    public static function defaultCron(): ?CronExpression
-    {
-        return null;
     }
 
     public function recreateOrder(

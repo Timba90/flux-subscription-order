@@ -13,11 +13,13 @@ use WeblabStudio\Models\WlsSubscription;
 
 class SubscriptionOrderServiceProvider extends ServiceProvider
 {
+    public function boot(): void {}
+
     public function register(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'weblab-subscription');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'weblab-subscription');
+        $this->loadJsonTranslationsFrom(__DIR__ . '/../resources/lang');
 
         Livewire::component('order.itm-subscription-order', WlsSubscriptionOrder::class);
 
@@ -30,6 +32,4 @@ class SubscriptionOrderServiceProvider extends ServiceProvider
 
         Repeatable::register('itm-subscription', ProcessWlsSubscriptions::class);
     }
-
-    public function boot(): void {}
 }

@@ -14,16 +14,6 @@ class WlsSubscription extends Model
         'id',
     ];
 
-    public function order(): HasOne
-    {
-        return $this->hasOne(Order::class);
-    }
-
-    public function order_type(): HasOne
-    {
-        return $this->hasOne(OrderType::class);
-    }
-
     public static function firstActionDate(
         ?string $startDate,
         ?string $endDate,
@@ -76,40 +66,55 @@ class WlsSubscription extends Model
     {
         $nextActionDate = new Carbon($this->next_action_date);
         if ($this->execution_interval === 'monthly') {
-            $nextActionDate->addMonth();
+            if ($this->execution_time === 'last-of-month') {
+                $nextActionDate->firstOfMonth()->addMonth()->endOfMonth();
+            } else {
+                $nextActionDate->addMonth();
+            }
         } elseif ($this->execution_interval === 'quarterly') {
-            $nextActionDate->addMonth(3);
+            if ($this->execution_time === 'last-of-month') {
+                $nextActionDate->firstOfMonth()->addMonth(3)->endOfMonth();
+            } else {
+                $nextActionDate->addMonth(3);
+            }
         } elseif ($this->execution_interval === 'half-yearly') {
-            $nextActionDate->addMonth(6);
+            if ($this->execution_time === 'last-of-month') {
+                $nextActionDate->firstOfMonth()->addMonth(6)->endOfMonth();
+            } else {
+                $nextActionDate->addMonth(6);
+            }
         } elseif ($this->execution_interval === 'yearly') {
-            $nextActionDate->addYear();
+            if ($this->execution_time === 'last-of-month') {
+                $nextActionDate->firstOfMonth()->addYear()->endOfMonth();
+            } else {
+                $nextActionDate->addYear();
+            }
         }
 
         return $nextActionDate;
     }
 
-    public function updateNextActionDate(): string
+    public function order(): HasOne
     {
-        $nextActionDate = new Carbon($this->next_action_date);
+        return $this->hasOne(Order::class);
+    }
 
-        if ($this->execution_time === 'Anfang des Monats') {
+    public function order_type(): HasOne
+    {
+        return $this->hasOne(OrderType::class);
+    }
+
+    public function updateNextActionDate(
+        ?string $nextActionDate,
+        ?string $executionTime
+    ): string {
+        $nextActionDate = new Carbon($nextActionDate);
+
+        if ($executionTime === 'first-of-month') {
             $nextActionDate->startOfMonth();
         }
-        // Set the first action date to the end of the month
-        if ($this->execution_time === 'Ende des Monats') {
+        if ($executionTime === 'last-of-month') {
             $nextActionDate->endOfMonth();
-        }
-
-        if ($nextActionDate < $this->startDate) {
-            if ($this->execution_interval === 'monthly') {
-                $nextActionDate->addMonth();
-            } elseif ($this->execution_interval === 'quarterly') {
-                $nextActionDate->addMonth(3);
-            } elseif ($this->execution_interval === 'half-yearly') {
-                $nextActionDate->addMonth(6);
-            } elseif ($this->execution_interval === 'yearly') {
-                $nextActionDate->addYear();
-            }
         }
 
         return $nextActionDate;

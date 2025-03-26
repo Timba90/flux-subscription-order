@@ -8,15 +8,15 @@ use WeblabStudio\Rulesets\WlsSubscription\DeleteWlsSubscriptionRuleset;
 
 class DeleteWlsSubscription extends FluxAction
 {
+    public static function models(): array
+    {
+        return [DeleteWlsSubscription::class];
+    }
+
     protected function boot(array $data): void
     {
         parent::boot($data);
         $this->rules = resolve_static(DeleteWlsSubscriptionRuleset::class, 'getRules');
-    }
-
-    public static function models(): array
-    {
-        return [DeleteWlsSubscription::class];
     }
 
     public function performAction(): mixed
